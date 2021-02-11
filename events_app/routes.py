@@ -20,7 +20,7 @@ def index():
     # Gets all events and sends them to the template
     all_events = Event.query.all()
 
-    return render_template('index.html', events=events)
+    return render_template('index.html', all_events=all_events)
 
 
 @main.route('/event/<event_id>', methods=['GET'])
@@ -51,7 +51,7 @@ def rsvp(event_id):
         guest_phone = request.form.get('phone')
         # Creates a new guest with the given name, email, and phone, and 
         # add the event to their events_attending, then commit to the database
-        new_guest = Guest(name=new_guest, email, phone).one()
+        new_guest = Guest(name=new_guest, email=guest_email, phone=guest_phone).one()
         new_guest.events_attending.append(event)
         db.sessions.commit(new_guest)
         db.sessions.commit()
@@ -78,6 +78,10 @@ def create():
 
         # TODO: Create a new event with the given title, description, & 
         # datetime, then add and commit to the database
+        new_event = Event(event=new_event_title, description=new_event_description, date=date, time=time)
+        db.session.commit(new_event)
+        db.sessions.commit()
+
 
         flash('Event created.')
         return redirect(url_for('main.index'))
@@ -88,4 +92,5 @@ def create():
 @main.route('/guest/<guest_id>')
 def guest_detail(guest_id):
     # TODO: Get the guest with the given id and send to the template
-    return render_template('guest_detail.html')
+    specific_guest = Guest.query.filter_by(id=guest_id).one()
+    return render_template('guest_detail.html', specific_guest=specific_guest)
