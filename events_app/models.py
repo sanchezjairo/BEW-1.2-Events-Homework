@@ -34,8 +34,16 @@ class Guest(db.Model):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    
+    title = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(80))
+    date_and_time = db.Column(db.Date)
+    guests = db.relationship('Guest', secondary = 'guest_event')
 
+    def __str__(self):
+        return f'<Event Title: {self.title}>'
+
+    def __repr__(self):
+        return f'<Event Title: {self.title}>'
 # TODO: Create a table `guest_event_table` with the following columns:
 # - event_id: Integer column (foreign key)
 # - guest_id: Integer column (foreign key)
